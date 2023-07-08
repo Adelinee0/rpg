@@ -73,7 +73,6 @@ class MyResponses(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['time_now'] = datetime.utcnow()
-        author = Response.advertResponse.author
         myresp = Response.objects.filter(advertResponse__author=self.request.user)
         #юзер должен видеть только те отклики, которые прездназначались ему, значит aвтор=юзер
         context['myresp'] = myresp
@@ -103,9 +102,9 @@ def response_accept(request, pk):
 
     #send_mail(
         #subject='Ваш отклик приняли!',
-        #message=f'{user.username}, ваш отклик от',
-        #from_email=None,  # будет использовано значение DEFAULT_FROM_EMAIL
-        #recipient_list=[user.email],
+       # message=f'{user.username}, ваш отклик к {advert.title} приняли',
+       # from_email=None,  # будет использовано значение DEFAULT_FROM_EMAIL
+       # recipient_list=[user.email],
     #)
 
 
@@ -139,14 +138,12 @@ class ResponseCreate(LoginRequiredMixin, CreateView):
         response = form.save(commit=False)
         response.advertResponse = Advert.objects.get(pk=self.request.resolver_match.kwargs['pk'])
         response.authorResponse = self.request.user
-        #form.instance.post = Advert.object.get(pk=self.request.)
-        #self.request.resolver_match.kwargs['pk']
-        send_mail(
-            subject='На ваше объявление откликнулись!',
-            message=f'{response.advertResponse.author.username}, вам отклик от {response.authorResponse}! Вот он: "{response.text}" ',
-            from_email=None,  # будет использовано значение DEFAULT_FROM_EMAIL
-            recipient_list=[response.advertResponse.author.email],
-        )
+        #send_mail(
+           # subject='На ваше объявление откликнулись!',
+           # message=f'{response.advertResponse.author.username}, вам отклик от {response.authorResponse}! Вот он: "{response.text}" ',
+           # from_email=None,  # будет использовано значение DEFAULT_FROM_EMAIL
+           # recipient_list=[response.advertResponse.author.email],
+       # )
         return super().form_valid(form)
 
 
