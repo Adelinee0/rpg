@@ -1,0 +1,33 @@
+{% extends 'flatpages/default.html' %}
+
+
+{% block title %}
+Advert
+{% endblock title %}
+
+
+{% block content %}
+<h3>Вы авторизовались как:</h3>
+        <h4>{{user.username}}</h4>
+  <hr>
+  <h1>Кто откликнулся: {{ response.authorResponse }}</h1>
+  <h2>Отклик: {{ response.text }}</h2>
+    <h3>На что откликнулся: {{ response.advertResponse }}</h3>
+
+
+  <hr>
+
+  <a href="{% url 'response_accept' pk=response.id %}">принять</a>
+  <a href="{% url 'response_reject' pk=response.id %}">отклонить</a>
+  <a href="{% url 'response_delete' pk=response.id %}">delete</a>
+
+
+
+
+  <button>
+     <a class="nav-link" href="{% url 'my_responses' %}">
+          <h4><strong>назад</strong></h4>
+      </a>
+  </button>
+
+{% endblock content %}

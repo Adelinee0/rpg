@@ -1,0 +1,59 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+Отклики на ваши объявления:
+{% endblock title %}
+
+{% block content %}
+
+<hr>
+<h3>Вы авторизовались как:</h3>
+        <h4>{{user.username}}</h4>
+
+   {% if responses %}
+            <table>
+           <tr>
+               <td>Кто</td>
+               <td>Описание</td>
+               <td>Объявление</td>
+               <td>Дата</td>
+               <td>Действия</td>
+               <td>Cтатус</td>
+           </tr>
+
+           {% for response in myresp %}
+           <tr>
+               <td>{{ response.authorResponse }}</td>
+               <td>{{ response.text|truncatewords:2 }}</td>
+               <td>{{ response.advertResponse.title }}</td>
+               <td>{{ response.createDate }}</td>
+               <td>
+                    <a href="{% url 'response' pk=response.id %}">Просмотреть</a>
+               </td>
+
+                    {% if response.status %}
+                        <td><h2>принят</h2></td>
+                    {% else %}
+                         <td><h2>не принят</h2></td>
+                    {% endif %}
+
+           </tr>
+           {% endfor %}
+
+           <hr>
+
+       </table>
+   {% else %}
+       <h2>Откликов нет!</h2>
+   {% endif %}
+<hr>
+
+<button>
+     <a class="nav-link" href="{% url 'advert_list' %}">
+          <h4><strong>назад</strong></h4>
+      </a>
+  </button>
+
+
+
+{% endblock content %}

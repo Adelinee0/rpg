@@ -1,0 +1,111 @@
+{% extends 'flatpages/default.html' %}
+{% load custom_tags %}
+
+
+{% block title %}
+    Объявления
+{% endblock title %}
+
+{% block content %}
+    <h1>Все объявления:</h1>
+    <h2>{{ time_now|date:'M d Y' }}</h2>
+
+    {% if user.is_authenticated %}
+        <h3>Вы авторизовались как:</h3>
+        <h4>{{user.username}}</h4>
+    {% else %}
+         <h5>Вы  не авторизовались</h5>
+    {% endif %}
+
+
+   <form action="" method="get">
+       {{ filterset.form.as_p }}
+       <input type="submit" value="Найти" />
+   </form>
+
+    {% if user.is_authenticated %}
+        <a href="{% url 'ad_create' %}">Создать объявление</a>
+    {% endif %}
+
+    <hr>
+
+    {% if is_user %}
+        <button>
+            <a class="nav-link" href="{% url 'signup' %}">
+            <h4><strong>Зарегистрироваться</strong></h4>
+        </a>
+        </button>
+    {% endif %}
+
+
+    {% if user.is_authenticated %}
+    <button>
+        <a class="nav-link" href="{% url 'my_responses' %}">
+            <h4><strong>Мои отклики</strong></h4>
+        </a>
+    </button>
+    {% endif %}
+
+   <hr>
+
+   {% if advert %}
+            <table>
+           <tr>
+               <td>Название</td>
+               <td>Описание</td>
+               <td>Категория</td>
+               <td>Дата</td>
+               <td>Автор</td>
+               <td>Состояние</td>
+               {% if user.is_authenticated %}
+                <td>Действия</td>
+                {% endif %}
+
+           </tr>
+
+           {% for ad in advert %}
+           <tr>
+               <td>{{ ad.title }}</td>
+               <td>{{ ad.text|truncatewords:2 }}</td>
+               <td>{{ ad.category }}</td>
+               <td>{{ ad.createDate }}</td>
+               <td>{{ ad.author.username }}</td>
+               <td>{{ response.status }}</td>
+               <td>
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'response_create' pk=ad.id %}">Откликнуться</a>
+                    {% endif %}
+                </td>
+           </tr>
+           {% endfor %}
+           <hr>
+
+       </table>
+   {% else %}
+       <h2>Объявлений нет!</h2>
+   {% endif %}
+     <hr>
+
+
+
+    {% if page_obj.has_previous %}
+       <a href="?{% url_replace page=1 %}">1</a>
+       {% if page_obj.previous_page_number != 1 %}
+           ...
+           <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+       {% endif %}
+   {% endif %}
+
+   {{ page_obj.number }}
+
+   {% if page_obj.has_next %}
+       <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
+
+{% endblock content %}
+
+

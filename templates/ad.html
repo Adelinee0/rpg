@@ -1,0 +1,27 @@
+
+{% extends 'flatpages/default.html' %}
+
+
+{% block title %}
+Advert
+{% endblock title %}
+
+
+{% block content %}
+<h1>{{ ad }}</h1>
+
+<hr>
+
+{% if user.is_authenticated %}
+    <a href="{% url 'response_create' pk=ad.id %}">Оставить отклик</a>
+        {% endif %}
+
+<hr>
+
+<button>
+    <a class="nav-link" href="{% url 'advert_list' %}">
+        <h4><strong>назад</strong></h4>
+    </a>
+</button>
+
+{% endblock content %}
