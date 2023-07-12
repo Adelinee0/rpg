@@ -12,6 +12,7 @@ from django.core.mail import send_mail
 
 
 class AdvertList(ListView):
+    '''все объявления'''
     model = Advert
     ordering = '-createDate'
     template_name = 'advert.html'
@@ -19,6 +20,7 @@ class AdvertList(ListView):
     paginate_by = 5
 
     def get_queryset(self):
+        '''возвращает список отфильтрованных объявлений'''
         queryset = super().get_queryset()
         self.filterset = AdvertFilter(self.request.GET, queryset)
         return self.filterset.qs
@@ -27,14 +29,12 @@ class AdvertList(ListView):
         context = super().get_context_data(**kwargs)
         context['time_now'] = datetime.utcnow()
         context['filterset'] = self.filterset
-        add = Advert.objects.filter(author = self.request.user) #не нужно показывать с списке свои объявление
-        context['add'] = add
         return context
 
 class AdvertDetail(DetailView):
     model = Advert
     template_name = 'ad.html'
-    context_object_name = 'ad' #в шаблоне это имя юзаем
+    context_object_name = 'ad'
 
 class AdvertCreate(LoginRequiredMixin, CreateView):
 
@@ -78,13 +78,6 @@ class MyResponses(LoginRequiredMixin, ListView):
         context['myresp'] = myresp
         return context
 
-    # Лучше сделать выборку в КП с помощью метода filter.
-    # Текущего пользователя можно получить через обращение к запросу.
-    # Например, для метода get_context_data: объявления = Объявление.объекты.фильтр(пользователь = self.requset.user)
-    #Да, получаем в КП с помощью фильтрации выборку из БД (коллекцию)
-    # и выводим её в шаблон через контекст. В шаблоне итерируемся по полученной из КП коллекции.
-
-
 
 class ResponseDetail(LoginRequiredMixin, DetailView):
     model = Response
@@ -92,20 +85,14 @@ class ResponseDetail(LoginRequiredMixin, DetailView):
     context_object_name = 'response'
 
 def response_accept(request, pk):
-    #Через аргументы ФП можно передать пк отклика.
-    # Далее следует сделать запрос к БД, найти отклик по этому пк, изменить его статус и сохранить.
+    '''Через аргументы ФП можно передать пк отклика.
+    Далее следует сделать запрос к БД, найти отклик по этому пк,
+    изменить его статус и сохранить'''
 
     resp = Response.objects.get(id=pk)
     resp.status = True
     resp.save()
     return render(request, 'accept.html')
-
-    #send_mail(
-        #subject='Ваш отклик приняли!',
-       # message=f'{user.username}, ваш отклик к {advert.title} приняли',
-       # from_email=None,  # будет использовано значение DEFAULT_FROM_EMAIL
-       # recipient_list=[user.email],
-    #)
 
 
 def response_reject(request, pk):
@@ -115,14 +102,11 @@ def response_reject(request, pk):
   return render(request, 'reject.html')
 
 
-
 class ResponseDelete(LoginRequiredMixin, DeleteView):
     raise_exception = True
     model = Response
     template_name = 'response_delete.html'
     success_url = reverse_lazy('my_responses')
-
-
 
 class ResponseCreate(LoginRequiredMixin, CreateView):
     raise_exception = True
@@ -133,17 +117,10 @@ class ResponseCreate(LoginRequiredMixin, CreateView):
     #context_object_name = 'response'
 
     def form_valid(self, form):
-        ''' для заполнения таких полей, как advertResponse и authorResponse,
-        а также для отправки письма при создании отклика'''
+        '''для  автоматического заполнения таких полей, как advertResponse и authorResponse'''
         response = form.save(commit=False)
         response.advertResponse = Advert.objects.get(pk=self.request.resolver_match.kwargs['pk'])
         response.authorResponse = self.request.user
-        #send_mail(
-           # subject='На ваше объявление откликнулись!',
-           # message=f'{response.advertResponse.author.username}, вам отклик от {response.authorResponse}! Вот он: "{response.text}" ',
-           # from_email=None,  # будет использовано значение DEFAULT_FROM_EMAIL
-           # recipient_list=[response.advertResponse.author.email],
-       # )
         return super().form_valid(form)
 
 

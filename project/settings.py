@@ -45,10 +45,7 @@ INSTALLED_APPS = [
     'advert',
     'django_filters',
 
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.yandex',
+    'accounts'
 
 ]
 
@@ -78,7 +75,8 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+                'django.contrib.messages.context_processors.messages'
+
             ],
         },
     },
@@ -88,7 +86,7 @@ WSGI_APPLICATION = 'project.wsgi.application'
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
+    #'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 # Database
@@ -150,13 +148,14 @@ STATICFILES_DIRS = [
 
 LOGIN_REDIRECT_URL = "/adverts" #то, куда перенаправит после регистрации
 
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_UNIQUE_EMAIL = True
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = 'none' #надо поменять mandatory.
+#ACCOUNT_EMAIL_REQUIRED = True
+#ACCOUNT_UNIQUE_EMAIL = True
+#ACCOUNT_USERNAME_REQUIRED = False
+#ACCOUNT_AUTHENTICATION_METHOD = 'email'
+#ACCOUNT_EMAIL_VERIFICATION = 'mandatory' #надо поменять mandatory.
+#ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 
-ACCOUNT_FORMS = {"signup": "accounts.forms.CustomSignupForm"}
+#ACCOUNT_FORMS = {"signup": "accounts.forms.SignupForm"}
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.yandex.ru'
