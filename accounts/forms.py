@@ -17,7 +17,10 @@ class SignUpForm(UserCreationForm):
             "password1",
             "password2",
         )
-
+class CustomSignupForm(SignUpForm):
+    def save(self, request):
+        user = super().save(request)
+        return user
 
 
 class CodeForm(forms.ModelForm):
